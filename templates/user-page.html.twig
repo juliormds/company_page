@@ -1,0 +1,485 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+{#<label>This page belongs to user id with: {{ uid }}</label>
+
+<div>
+  <label for="">Your user id is {{ logged_in_user_id }}</label>
+</div>#}
+
+<div>
+
+  {#{% for key, value in allresults %}
+    <p>Name: {{ value.company_name }}</p>
+    <p>Image: {{ value.post_image }}</p>
+    <p>Message: {{ value.post_message }}</p>
+  {% endfor %}#}
+
+</div>
+
+<style>
+
+  .invalid{
+    background-color: #fad4cf;
+  }
+
+  .profile_box{
+    box-shadow: 0px 1px 1px 2px rgba(0,0,0,0.1);
+    margin-top: 20px;
+    /*border-radius: 10px;
+    padding-bottom: 20px;*/
+    text-align: left;
+    /*width: 75%;*/
+  }
+
+  #edit{
+    color: blue;
+  }
+
+  #edit:hover{
+    cursor: pointer;
+    color: red;
+  }
+
+  .trash_icon:hover{
+    cursor: pointer;
+  }
+
+  .edit_post:hover{
+    cursor: pointer;
+  }
+
+  #txt_about{
+    resize: none;
+  }
+
+</style>
+
+<div class="profile_box">
+  <div class="container">
+    <div class="row">
+      <br />
+
+      <div class="col-sm-4" style="width: 13%; margin-left: 2%">
+        {% if page_picture == "" %}
+        <div style="height: 100px; width: 100px; background-color: lightgray; padding-top: 34px; padding-left: 13px">Logo Image</div>
+        {% else %}
+        <div><img style="height: 100px; width: 100px;" src="/sites/default/files/inline-images/company_images/{{ page_picture }}" alt="Company Image"></div>
+        {% endif %}
+        <br />
+
+        {% if logged_in_user_id != 0 %}
+          <div>
+            <a href="{{ 'https://' in website ? website : "https://" ~ website }}" style="width: 103px;" class="btn btn-primary" target="_blank">Visit Website</a>
+          </div>
+        {% endif %}
+
+        <br />
+      </div>
+
+      <div class="col-sm-4" style="/*margin-left: 5%; width: 29%; color: black;*/ font-size: 22px;">
+        <p><strong>{#Company Name#}{{ name_of_user }}</strong></p>
+        <div><span>{#Industry#}{{ industry }}</span>,<span> {#Location#}{{ headquarters != "" ? headquarters : "location" }}</span>,<span> followers: {{ count_following }}</span></div>
+        <br />
+        <div><span>{#Tagline goes here#}{{ tagline }}</span></div>
+      </div>
+
+      {% if logged_in_user_id != 0 and count_following_each_other == 0 %}
+        <div class="col-sm-4">
+          <a id="{{ logged_in_user_id != uid ? "btn_follow" : "btn_edit_page" }}" class="btn btn-primary" href="javascript:void(0)">
+            {{ (logged_in_user_id == uid ? "Edit Page" : "Follow+") }}</a>
+        </div>
+        {% elseif count_following_each_other == 1 %}
+        <p><strong>Following</strong></p>
+      {% endif %}
+
+    </div>
+
+  </div>
+
+</div>
+<br />
+<br />
+
+<!-- Menu tabs go here -->
+
+<div style="display: flex; font-size: 22px;">
+  <div>Home</div>
+  <div style="margin-left: 25px;">Jobs</div>
+  <div style="margin-left: 25px;">Followers</div>
+  <div style="margin-left: 25px;">Members</div>
+</div>
+
+<!-- About section here -->
+
+<div class="profile_box">
+  <div class="container">
+    <div style="width: 57%; font-size: 18px; margin-top: 10px;">
+      <div style="float: left; margin-left: 3%;"><strong>About</strong></div>
+      {% if logged_in_user_id == uid %}
+      <div id="edit" data-toggle="modal" data-target="#myModal" style="float: right;">Edit</div>
+        <!-- Modal -->
+        {% include '@company_page/user-page-edit-modal.html.twig' %}
+      {% endif %}
+    </div>
+  </div>
+  <hr style="border-top: 5px solid #cce5f1; width: 91%;" />
+  <div class="container">
+    {% if about != "" %}
+    <p style="width: 59%; margin-left: 2%;">{{ about }}</p>
+    {% else %}
+    <p style="width: 59%; margin-left: 2%;">Write something about your company page</p>
+    {% endif %}
+    <br />
+  </div>
+
+</div>
+
+
+
+<br />
+<br />
+<!-- View Posts section here -->
+
+<div>
+  <p style="font-size: 20px;"><strong>View Posts</strong></p>
+</div>
+
+<br />
+<br />
+
+<div style="display: flex; justify-content: space-between">
+  <div style="font-size: 20px; margin-top: 5px;">Sort by</div>
+  {% if logged_in_user_id != uid %}
+    <div><button data-toggle="modal" data-target="#create_post_modal" class="btn btn-primary">Create a post</button></div>
+  {% endif %}
+</div>
+
+<br />
+<br />
+<!-- Add create post modal here -->
+{% include '@company_page/create-post-modal.html.twig' %}
+
+<br />
+
+{% if poster_count != 0 %}
+
+  {% for value in allresults %}
+
+    <div class="profile_box">
+<div style="margin-left: 10px;" class="">
+<div class="row">
+
+    <br />
+
+    <div class="col-sm-3" style="width: 13%; margin-left: 2%">
+      {% if value.page_picture == "" %}
+      <div style="height: 100px; width: 100px; background-color: lightgray; padding-top: 34px; padding-left: 13px">Logo Image</div>
+      {% else %}
+        <img height="100" width="100" class="img-responsive" src="/sites/default/files/inline-images/company_images/{{ value.page_picture }}" alt="Picture">
+        {% endif %}
+    </div>
+
+  <div class="col-sm-9" style="/*margin-left: 5%; width: 29%; color: black;*/ font-size: 16px;">
+    <!-- DISPLAY DELETE TRASH CAN ONLY TO THE OWNERS OF THE POST -->
+    <div style="display: flex;">
+      <p><strong>{{ value.name_of_user }}</strong></p>
+      {% if logged_in_user_id == value.poster_id %}
+      <div class="edit_post" style="margin-left: 70%;" data-post-id="{{ value.id }}" data-toggle="modal" data-target="#edit_post_modal">Edit Post</div>
+        <!-- Edit Post Modal -->
+        {% include '@company_page/post-edit-modal.html.twig' %}
+        <!--Trash delete post-->
+      <div class="trash_icon" data-delete-id="{{ value.id }}" data-toggle="modal" data-target="#delete_post_modal"><img style="height: 25px; margin-left: 57%;" src="/sites/default/files/inline-images/posts/delete_icon.png" alt="Delete Icon"></div>
+      {% include '@company_page/delete-post-modal.html.twig' %}
+      {% endif %}
+    </div>
+
+    <div><span>Posted on {{ value.created_at|date("M d, Y") }}</span></div>
+  </div>
+
+  </div>
+
+  <br />
+
+  <div class="row">
+    <div class="container">
+      <div style="width: 64%;" class="col-sm-9">
+
+        {% if value.post_image != "" %}
+        <div>
+          <img style="margin: 0 auto;" class="img-responsive" src="/sites/default/files/inline-images/posts/{{ value.post_image }}" alt="Picture">
+        </div>
+        {% endif %}
+
+        <br />
+        {#<div class="hidden_post_message" data-message="{{ value.post_message }}" hidden></div>#}
+        <p class="message_value" style="width: 75%;">
+          {{ value.post_message }}
+        </p>
+        <hr />
+        <div style="display: flex;">
+          <div>Like</div>
+          <div style="margin-left: 27px;">Comment</div>
+          {#{% if logged_in_user_id == poster_id %}
+          <div style="margin-left: 78%;"><button id="btn_delete_post" class="btn btn-danger">Delete</button></div>
+          {% endif %}#}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  <div style="background-color: lightgray; height: 65px; margin-top: 15px">
+    <div class="container">
+      <div style="padding-top: 24px; padding-left: 14px;">Be the first to comment on this</div>
+    </div>
+  </div>
+</div>
+  {% endfor %}
+
+{% endif %}
+<script>
+
+  (function ($, Drupal){
+
+    /** Get current user id variable from above markup and pass it down here to javascript **/
+    let currentUserID = '{{ logged_in_user_id }}';
+
+    let ownerOfPageID = '{{ uid }}';
+
+    let ownerPage = '{{ grmds_url }}';
+
+    //let postID = $('#trash_icon').attr('data-delete-id');
+
+
+    $('#btn_edit_page').on('click', function (){
+
+      //alert("Edit page coming soon currently fixing a bug");
+      //alert("You clicked the edit page button. Your user id is: " + currentUserID);
+
+      window.location.href = "/company/"+ currentUserID +"/edit"
+
+    });
+
+    $('#btn_follow').on('click', function (){
+      //alert("Working on the back-end logic to keep track of users being followed");
+
+      $.ajax({
+        url: "/company/" + ownerOfPageID + "/follow_user_page",
+        type: "POST",
+        dataType: "JSON",
+        success: function (data){
+          window.location.href = "/company/" + ownerPage;
+
+        }
+
+      });
+
+    });
+
+
+    $('#btn_submit_post').on('click', function (e){
+
+      e.preventDefault();
+
+      /** Validate user input fileds **/
+
+      let post_message = $('#txt_post_message').val();
+
+      let post_image = $('#postImage')[0].files[0];
+
+      let form_data = new FormData();
+
+      form_data.append("postMessage", post_message);
+      form_data.append("postImage", post_image);
+
+
+        if(post_message !== ""){
+
+            /** Make Ajax request to back-end php controller **/
+
+            $.ajax({
+              url: "/company/" + ownerOfPageID + "/create_post",
+              type: "POST",
+              processData: false, // important
+              contentType: false, // important
+              data: form_data,
+              dataType: "JSON",
+              success: function (data){
+                console.log(data);
+
+                if(data.result === "success"){
+
+                  window.location.href = "/company/" + ownerPage;
+
+                } else if(data.result === "error"){
+                  alert(data.msg);
+                }
+
+              }
+
+            });
+
+
+        } else {
+          addClassToElements('#txt_post_message');
+        }
+
+    });
+
+    $('#btn_save_changes').on('click', function (){
+
+      let edit_txt_about = $('#edit_txt_about').val();
+
+      /** Send to back-end and save to database **/
+      $.ajax({
+        url: "/company/" + currentUserID + "/edit/about",
+        type: "POST",
+        body: {edit_txt_about: edit_txt_about},
+        dataType: "JSON",
+        success: function (data){
+          console.log(data);
+
+          if(data.result === "success"){
+            alert(data.msg);
+            //window.location.href = "/company/" + ownerPage;
+
+          }
+
+        }
+
+      });
+
+
+    });
+
+    $('.edit_post').on('click', function (){
+
+      //let edit_post_item = $(this);
+
+      let edit_post_id = $(this).attr('data-post-id');
+
+      //alert("Edit Post id is " + edit_post_id);
+
+
+      /** Connect to back-end database to delete selected post **/
+        $.ajax({
+          url: "/company/"+ edit_post_id +"/edit/post",
+          type: "POST",
+          dataType: "JSON",
+          success: function (data){
+            console.log(data);
+
+            $('.test_post_edit_id').html(data.id);
+
+            $('.edit_txt_name').val(data.edit_post_company_name);
+
+            $('.edit_txt_post_message').html(data.edit_post_message);
+
+            /*if(data.result === "success"){
+              $('#delete_post_modal').modal('hide');
+              item.parent().parent().parent().parent().parent().remove();
+              //window.location.href = "/company/" + ownerPage;
+
+            }*/
+
+          }
+
+        });
+    });
+
+    /** Update button click event **/
+
+    $('.btn_submit_edit_post').on('click', function (){
+
+      let id = $('.test_post_edit_id').html(); /** This element will be hidden **/
+
+      let edit_post_image = $('.editImage')[0].files[0];
+
+      let message = $('.edit_txt_post_message').val();
+
+      let my_edit_form_data = new FormData();
+
+      my_edit_form_data.append('edit_post_image', edit_post_image);
+      my_edit_form_data.append('edit_message', message);
+
+      /** Create ajax call to save any changes made **/
+
+      $.ajax({
+        url: "/company/" + id + "/save/edit/post",
+        type: "POST",
+        processData: false, // important
+        contentType: false, // important
+        data: my_edit_form_data,
+        dataType: "JSON",
+        success: function (data){
+          console.log(data);
+
+          if(data.result === "success"){
+
+            window.location.href = "/company/" + ownerPage;
+
+          } else if(data.result === "error"){
+            alert(data.msg);
+          }
+
+        }
+
+      });
+
+    });
+
+    $('.trash_icon').on('click', function (){
+      let item = $(this);
+      let id = $(this).attr('data-delete-id');
+      alert("Delete Post id is: " + id);
+
+      /** Connect to back-end database to delete selected post **/
+      $('.btn_delete_post').on('click', function (){
+        $.ajax({
+          url: "/company/"+ id +"/delete/post",
+          type: "POST",
+          dataType: "JSON",
+          success: function (data){
+            console.log(data);
+
+            if(data.result === "success"){
+
+              $('#delete_post_modal').modal('hide');
+
+              item.parents('.profile_box').remove();
+
+            }
+
+          }
+
+        });
+      });
+
+
+    });
+
+    onBlurElements('#txt_name');
+    onBlurElements('#txt_post_message');
+
+
+    /** Create a function to handle all input blur elements **/
+    function onBlurElements(targetElement){
+
+      $(targetElement).blur(function (){
+        //alert($(targetElement).val());
+        if($(targetElement).val() === ""){
+          $(targetElement).addClass('invalid');
+        } else {
+          $(targetElement).removeClass('invalid');
+        }
+
+      });
+
+    }
+
+    function addClassToElements(addClassElement){
+      $(addClassElement).addClass('invalid');
+    }
+
+  })(jQuery, Drupal);
+
+</script>

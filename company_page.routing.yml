@@ -1,0 +1,96 @@
+# Create a route with controller function to be called
+basic_form:
+  path: '/company'
+  defaults:
+    _controller: 'Drupal\company_page\Controller\CompanyForm::displayForm'
+    _title: 'Create Page'
+  requirements:
+    _permission: 'access content'
+
+basic_form.insertData:
+  path: '/insert/company_page'
+  defaults:
+    _controller: 'Drupal\company_page\Controller\CompanyForm::insertData'
+    _title: 'Form'
+  requirements:
+    _permission: 'access content'
+
+basic_form.displayUserPage:
+  path: '/company/{url}'
+  defaults:
+    _controller: 'Drupal\company_page\Controller\CompanyForm::displayUserPage'
+    _title: 'User Page'
+  requirements:
+    _permission: 'access content'
+
+basic_form.saveDraft:
+  path: '/save_draft/company_page'
+  defaults:
+    _controller: 'Drupal\company_page\Controller\CompanyForm::saveDraft'
+    _title: 'User Page'
+  requirements:
+    _permission: 'access content'
+
+basic_form.editCompanyPage:
+  path: '/company/{uid}/edit'
+  defaults:
+    _controller: 'Drupal\company_page\Controller\CompanyForm::editCompanyPage'
+    _title: 'User Page'
+  requirements:
+    _permission: 'access content'
+
+basic_form.updateUserPage:
+  path: '/company/{uid}/update'
+  defaults:
+    _controller: 'Drupal\company_page\Controller\CompanyForm::updateUserPage'
+    _title: 'User Page'
+  requirements:
+    _permission: 'access content'
+
+basic_form.saveFollowingUserPage:
+  path: '/company/{followingID}/follow_user_page'
+  defaults:
+    _controller: 'Drupal\company_page\Controller\CompanyForm::saveFollowingUserPage'
+    _title: 'User Page'
+  requirements:
+    _permission: 'access content'
+
+basic_form.createPosts:
+  path: '/company/{postingToId}/create_post'
+  defaults:
+    _controller: 'Drupal\company_page\Controller\CompanyForm::createPosts'
+    _title: 'User Page'
+  requirements:
+    _permission: 'access content'
+
+basic_form.deletePosts:
+  path: '/company/{id}/delete/post'
+  defaults:
+    _controller: 'Drupal\company_page\Controller\CompanyForm::deletePosts'
+    _title: 'User Page'
+  requirements:
+    _permission: 'access content'
+
+basic_form.saveAbout:
+  path: '/company/{uid}/edit/about'
+  defaults:
+    _controller: 'Drupal\company_page\Controller\CompanyForm::saveAbout'
+    _title: 'User Page'
+  requirements:
+    _permission: 'access content'
+
+basic_form.editPost:
+  path: '/company/{id}/edit/post'
+  defaults:
+    _controller: 'Drupal\company_page\Controller\CompanyForm::edit_post'
+    _title: 'User Page'
+  requirements:
+    _permission: 'access content'
+
+basic_form.savePost:
+  path: '/company/{id}/save/edit/post'
+  defaults:
+    _controller: 'Drupal\company_page\Controller\CompanyForm::saveEditPost'
+    _title: 'User Page'
+  requirements:
+    _permission: 'access content'

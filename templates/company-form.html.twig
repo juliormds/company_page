@@ -1,0 +1,418 @@
+<!-- CSS -->
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+<style>
+  .invalid{
+    background-color: #fad4cf;
+  }
+  #txt_Tagline{
+    resize: none;
+  }
+</style>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{#
+<link rel="stylesheet" href="/resources/demos/style.css">
+#}
+{#<script src="https://code.jquery.com/jquery-1.12.4.js"></script>#}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<div class="" style="width: 50%;">
+
+  <!-- Check if user is authenticated -->
+  {% if 'authenticated' in user.getroles() %}
+<div style="">
+  <h2>Create a Company Page</h2><br />
+  <p>Let's get started with a few details about you business.</p>
+</div>
+<br />
+<!--Page Identity-->
+<div class="" style="">
+  <div style="color: cornflowerblue">Page Identity</div>
+
+</div>
+
+
+<div class="" style="">
+  <hr style="border: 2px solid cornflowerblue;" />
+</div>
+
+<br />
+
+
+  <div class="form-group">
+    <label for="txt_name">Name*</label>
+    <input onkeyup="addHyphen(this)" type="text" class="form-control" id="txt_name" value="{{ name_of_user }}" required>
+    <div id="validation_overview_feedback" class="invalid-feedback">
+      This field is required.
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="txt_grmds_public_url">GRMDS public URL*</label><br />
+
+    <p>grmds.org/company/<span id="span_grmds_url">{{ grmds_url }}</span></p>
+    <input onkeyup="addHyphen(this)" type="text" class="form-control" id="txt_grmds_public_url" value="{{ grmds_url }}" required>
+
+
+    <div id="validation_grmds_public_url_feedback" class="invalid-feedback">
+      This field is required.
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="txt_website">Company website link*</label>
+    <input placeholder="Begin with http:// or https:// or www" type="text" class="form-control" id="txt_website" value="{{ website }}" required>
+    <div id="validation_overview_feedback" class="invalid-feedback">
+      This field is required.
+    </div>
+  </div>
+
+  <br />
+
+  <!--Company Details-->
+  <div class="" style="">
+    <div style="color: cornflowerblue">Company Details</div>
+
+  </div>
+
+  <div class="" style="">
+    <hr style="border: 2px solid cornflowerblue;" />
+  </div>
+  <br />
+
+  <div>
+    <div class="form-group">
+      <label for="inputIndustry">Industry*</label>
+      <select name="inputIndustry" id="inputIndustry" class="form-control" required>
+        <option selected value="">Select industry</option>
+        <option {{ industry == "Accounting" ? "selected" : "" }} value="Accounting">Accounting</option>
+        <option {{ industry == "Airlines/Aviation" ? "selected" : "" }} value="Airlines/Aviation">Airlines/Aviation</option>
+        <option {{ industry == "Alternative Dispute Resolution" ? "selected" : "" }} value="Alternative Dispute Resolution">Alternative Dispute Resolution</option>
+        <option {{ industry == "Alternative Medicine" ? "selected" : "" }} value="Alternative Medicine">Alternative Medicine</option>
+        <option {{ industry == "Animation" ? "selected" : "" }} value="Animation">Animation</option>
+        <option {{ industry == "Apparel & Fashion" ? "selected" : "" }} value="Apparel &amp; Fashion">Apparel &amp; Fashion</option>
+        <option {{ industry == "Architecture & Planning" ? "selected" : "" }} value="Architecture &amp; Planning">Architecture &amp; Planning</option>
+        <option {{ industry == "Arts & Crafts" ? "selected" : "" }} value="Arts &amp; Crafts">Arts &amp; Crafts</option>
+        <option {{ industry == "Automotive" ? "selected" : "" }} value="Automotive">Automotive</option>
+        <option {{ industry == "Aviation & Aerospace" ? "selected" : "" }} value="Aviation &amp; Aerospace">Aviation &amp; Aerospace</option>
+        <option {{ industry == "Banking" ? "selected" : "" }} value="Banking">Banking</option>
+        <option {{ industry == "Biotechnology" ? "selected" : "" }} value="Biotechnology">Biotechnology</option>
+        <option {{ industry == "Broadcast Media" ? "selected" : "" }} value="Broadcast Media">Broadcast Media</option>
+        <option {{ industry == "Building Materials" ? "selected" : "" }} value="Building Materials">Building Materials</option>
+        <option {{ industry == "Business Supplies & Equipment" ? "selected" : "" }} value="Business Supplies &amp; Equipment">Business Supplies &amp; Equipment</option>
+        <option {{ industry == "Capital Markets" ? "selected" : "" }} value="Capital Markets">Capital Markets</option>
+        <option {{ industry == "Chemicals" ? "selected" : "" }} value="Chemicals">Chemicals</option>
+        <option {{ industry == "Civic & Social Organization" ? "selected" : "" }} value="Civic &amp; Social Organization">Civic &amp; Social Organization</option>
+        <option {{ industry == "Civil Engineering" ? "selected" : "" }} value="Civil Engineering">Civil Engineering</option>
+        <option {{ industry == "Commercial Real Estate" ? "selected" : "" }} value="Commercial Real Estate">Commercial Real Estate</option>
+        <option {{ industry == "Computer & Network Security" ? "selected" : "" }} value="Computer &amp; Network Security">Computer &amp; Network Security</option>
+        <option {{ industry == "Computer Games" ? "selected" : "" }} value="Computer Games">Computer Games</option>
+        <option {{ industry == "Computer Hardware" ? "selected" : "" }} value="Computer Hardware">Computer Hardware</option>
+        <option {{ industry == "Computer Networking" ? "selected" : "" }} value="Computer Networking">Computer Networking</option>
+        <option {{ industry == "Computer Software" ? "selected" : "" }} value="Computer Software">Computer Software</option>
+        <option {{ industry == "Construction" ? "selected" : "" }} value="Construction">Construction</option>
+        <option {{ industry == "Consumer Electronics" ? "selected" : "" }} value="Consumer Electronics">Consumer Electronics</option>
+        <option {{ industry == "Consumer Goods" ? "selected" : "" }} value="Consumer Goods">Consumer Goods</option>
+        <option {{ industry == "Consumer Services" ? "selected" : "" }} value="Consumer Services">Consumer Services</option>
+        <option {{ industry == "Cosmetics" ? "selected" : "" }} value="Cosmetics">Cosmetics</option>
+        <option {{ industry == "Dairy" ? "selected" : "" }} value="Dairy">Dairy</option>
+        <option {{ industry == "Defense & Space" ? "selected" : "" }} value="Defense &amp; Space">Defense &amp; Space</option>
+        <option {{ industry == "Design" ? "selected" : "" }} value="Design">Design</option>
+        <option {{ industry == "E-learning" ? "selected" : "" }} value="E-learning">E-learning</option>
+        <option {{ industry == "Education Management" ? "selected" : "" }} value="Education Management">Education Management</option>
+        <option {{ industry == "Electrical & Electronic Manufacturing" ? "selected" : "" }} value="Electrical &amp; Electronic Manufacturing">Electrical &amp; Electronic Manufacturing</option>
+        <option {{ industry == "Entertainment" ? "selected" : "" }} value="Entertainment">Entertainment</option>
+        <option {{ industry == "Environmental Services" ? "selected" : "" }} value="Environmental Services">Environmental Services</option>
+        <option {{ industry == "Events Services" ? "selected" : "" }} value="Events Services">Events Services</option>
+        <option {{ industry == "Executive Office" ? "selected" : "" }} value="Executive Office">Executive Office</option>
+        <option {{ industry == "Facilities Services" ? "selected" : "" }} value="Facilities Services">Facilities Services</option>
+        <option {{ industry == "Farming" ? "selected" : "" }} value="Farming">Farming</option>
+        <option {{ industry == "Financial Services" ? "selected" : "" }} value="Financial Services">Financial Services</option>
+        <option {{ industry == "Fine Art" ? "selected" : "" }} value="Fine Art">Fine Art</option>
+        <option {{ industry == "Fishery" ? "selected" : "" }} value="Fishery">Fishery</option>
+        <option {{ industry == "Food & Beverages" ? "selected" : "" }} value="Food &amp; Beverages">Food &amp; Beverages</option>
+        <option {{ industry == "Food Production" ? "selected" : "" }} value="Food Production">Food Production</option>
+        <option {{ industry == "Fundraising" ? "selected" : "" }} value="Fundraising">Fundraising</option>
+        <option {{ industry == "Furniture" ? "selected" : "" }} value="Furniture">Furniture</option>
+        <option {{ industry == "Gambling & Casinos" ? "selected" : "" }} value="Gambling &amp; Casinos">Gambling &amp; Casinos</option>
+        <option {{ industry == "Glass, Ceramics & Concrete" ? "selected" : "" }} value="Glass, Ceramics &amp; Concrete">Glass, Ceramics &amp; Concrete</option>
+        <option {{ industry == "Government Administration" ? "selected" : "" }} value="Government Administration">Government Administration</option>
+        <option {{ industry == "Government Relations" ? "selected" : "" }} value="Government Relations">Government Relations</option>
+        <option {{ industry == "Graphic Design" ? "selected" : "" }} value="Graphic Design">Graphic Design</option>
+        <option {{ industry == "Health, Wellness & Fitness" ? "selected" : "" }} value="Health, Wellness &amp; Fitness">Health, Wellness &amp; Fitness</option>
+        <option {{ industry == "Higher Education" ? "selected" : "" }} value="Higher Education">Higher Education</option>
+        <option {{ industry == "Hospital & Health Care" ? "selected" : "" }} value="Hospital &amp; Health Care">Hospital &amp; Health Care</option>
+        <option {{ industry == "Hospitality" ? "selected" : "" }} value="Hospitality">Hospitality</option>
+        <option {{ industry == "Human Resources" ? "selected" : "" }} value="Human Resources">Human Resources</option>
+        <option {{ industry == "Import & Export" ? "selected" : "" }} value="Import &amp; Export">Import &amp; Export</option>
+        <option {{ industry == "Individual &amp; Family Services" ? "selected" : "" }} value="Individual &amp; Family Services">Individual &amp; Family Services</option>
+        <option {{ industry == "Industrial Automation" ? "selected" : "" }} value="Industrial Automation">Industrial Automation</option>
+        <option {{ industry == "Information Services" ? "selected" : "" }} value="Information Services">Information Services</option>
+        <option {{ industry == "Information Technology &amp; Services" ? "selected" : "" }} value="Information Technology &amp; Services">Information Technology &amp; Services</option>
+        <option {{ industry == "Insurance" ? "selected" : "" }} value="Insurance">Insurance</option>
+        <option {{ industry == "International Affairs" ? "selected" : "" }} value="International Affairs">International Affairs</option>
+        <option {{ industry == "International Trade & Development" ? "selected" : "" }} value="International Trade &amp; Development">International Trade &amp; Development</option>
+        <option {{ industry == "Internet" ? "selected" : "" }} value="Internet">Internet</option>
+        <option {{ industry == "Investment Banking" ? "selected" : "" }} value="Investment Banking">Investment Banking</option>
+        <option {{ industry == "Investment Management" ? "selected" : "" }} value="Investment Management">Investment Management</option>
+        <option {{ industry == "Judiciary" ? "selected" : "" }} value="Judiciary">Judiciary</option>
+        <option {{ industry == "Law Enforcement" ? "selected" : "" }} value="Law Enforcement">Law Enforcement</option>
+        <option {{ industry == "Law Practice" ? "selected" : "" }} value="Law Practice">Law Practice</option>
+        <option {{ industry == "Legal Services" ? "selected" : "" }} value="Legal Services">Legal Services</option>
+        <option {{ industry == "Legislative Office" ? "selected" : "" }} value="Legislative Office">Legislative Office</option>
+        <option {{ industry == "Leisure, Travel & Tourism" ? "selected" : "" }} value="Leisure, Travel &amp; Tourism">Leisure, Travel &amp; Tourism</option>
+        <option {{ industry == "Libraries" ? "selected" : "" }} value="Libraries">Libraries</option>
+        <option {{ industry == "Logistics & Supply Chain" ? "selected" : "" }} value="Logistics &amp; Supply Chain">Logistics &amp; Supply Chain</option>
+        <option {{ industry == "Luxury Goods & Jewelry" ? "selected" : "" }} value="Luxury Goods &amp; Jewelry">Luxury Goods &amp; Jewelry</option>
+        <option {{ industry == "Machinery" ? "selected" : "" }} value="Machinery">Machinery</option>
+        <option {{ industry == "Management Consulting" ? "selected" : "" }} value="Management Consulting">Management Consulting</option>
+        <option {{ industry == "Maritime" ? "selected" : "" }} value="Maritime">Maritime</option>
+        <option {{ industry == "Market Research" ? "selected" : "" }} value="Market Research">Market Research</option>
+        <option {{ industry == "Marketing & Advertising" ? "selected" : "" }} value="Marketing &amp; Advertising">Marketing &amp; Advertising</option>
+        <option {{ industry == "Mechanical Or Industrial Engineering" ? "selected" : "" }} value="Mechanical Or Industrial Engineering">Mechanical Or Industrial Engineering</option>
+        <option {{ industry == "Media Production" ? "selected" : "" }} value="Media Production">Media Production</option>
+        <option {{ industry == "Medical Device" ? "selected" : "" }} value="Medical Device">Medical Device</option>
+        <option {{ industry == "Medical Practice" ? "selected" : "" }} value="Medical Practice">Medical Practice</option>
+        <option {{ industry == "Mental Health Care" ? "selected" : "" }} value="Mental Health Care">Mental Health Care</option>
+        <option {{ industry == "Military" ? "selected" : "" }} value="Military">Military</option>
+        <option {{ industry == "Mining & Metals" ? "selected" : "" }} value="Mining &amp; Metals">Mining &amp; Metals</option>
+        <option {{ industry == "Mobile Games" ? "selected" : "" }} value="Mobile Games">Mobile Games</option>
+        <option {{ industry == "Motion Pictures & Film" ? "selected" : "" }} value="Motion Pictures &amp; Film">Motion Pictures &amp; Film</option>
+        <option {{ industry == "Museums & Institutions" ? "selected" : "" }} value="Museums &amp; Institutions">Museums &amp; Institutions</option>
+        <option {{ industry == "Music" ? "selected" : "" }} value="Music">Music</option>
+        <option {{ industry == "Nanotechnology" ? "selected" : "" }} value="Nanotechnology">Nanotechnology</option>
+        <option {{ industry == "Newspapers" ? "selected" : "" }} value="Newspapers">Newspapers</option>
+        <option {{ industry == "Non-profit Organization Management" ? "selected" : "" }} value="Non-profit Organization Management">Non-profit Organization Management</option>
+        <option {{ industry == "Oil & Energy" ? "selected" : "" }} value="Oil &amp; Energy">Oil &amp; Energy</option>
+        <option {{ industry == "Online Media" ? "selected" : "" }} value="Online Media">Online Media</option>
+        <option {{ industry == "Outsourcing/Offshoring" ? "selected" : "" }} value="Outsourcing/Offshoring">Outsourcing/Offshoring</option>
+        <option {{ industry == "Package/Freight Delivery" ? "selected" : "" }} value="Package/Freight Delivery">Package/Freight Delivery</option>
+        <option {{ industry == "Packaging & Containers" ? "selected" : "" }} value="Packaging &amp; Containers">Packaging &amp; Containers</option>
+        <option {{ industry == "Paper & Forest Products" ? "selected" : "" }} value="Paper &amp; Forest Products">Paper &amp; Forest Products</option>
+        <option {{ industry == "Performing Arts" ? "selected" : "" }} value="Performing Arts">Performing Arts</option>
+        <option {{ industry == "Pharmaceuticals" ? "selected" : "" }} value="Pharmaceuticals">Pharmaceuticals</option>
+        <option {{ industry == "Philanthropy" ? "selected" : "" }} value="Philanthropy">Philanthropy</option>
+        <option {{ industry == "Photography" ? "selected" : "" }} value="Photography">Photography</option>
+        <option {{ industry == "Plastics" ? "selected" : "" }} value="Plastics">Plastics</option>
+        <option {{ industry == "Political Organization" ? "selected" : "" }} value="Political Organization">Political Organization</option>
+        <option {{ industry == "Primary/Secondary Education" ? "selected" : "" }} value="Primary/Secondary Education">Primary/Secondary Education</option>
+        <option {{ industry == "Printing" ? "selected" : "" }} value="Printing">Printing</option>
+        <option {{ industry == "Professional Training & Coaching" ? "selected" : "" }} value="Professional Training &amp; Coaching">Professional Training &amp; Coaching</option>
+        <option {{ industry == "Program Development" ? "selected" : "" }} value="Program Development">Program Development</option>
+        <option {{ industry == "Public Policy" ? "selected" : "" }} value="Public Policy">Public Policy</option>
+        <option {{ industry == "Public Relations & Communications" ? "selected" : "" }} value="Public Relations &amp; Communications">Public Relations &amp; Communications</option>
+        <option {{ industry == "Public Safety" ? "selected" : "" }} value="Public Safety">Public Safety</option>
+        <option {{ industry == "Publishing" ? "selected" : "" }} value="Publishing">Publishing</option>
+        <option {{ industry == "Railroad Manufacture" ? "selected" : "" }} value="Railroad Manufacture">Railroad Manufacture</option>
+        <option {{ industry == "Ranching" ? "selected" : "" }} value="Ranching">Ranching</option>
+        <option {{ industry == "Real Estate" ? "selected" : "" }} value="Real Estate">Real Estate</option>
+        <option {{ industry == "Recreational Facilities & Services" ? "selected" : "" }} value="Recreational Facilities &amp; Services">Recreational Facilities &amp; Services</option>
+        <option {{ industry == "Religious Institutions" ? "selected" : "" }} value="Religious Institutions">Religious Institutions</option>
+        <option {{ industry == "Renewables & Environment" ? "selected" : "" }} value="Renewables &amp; Environment">Renewables &amp; Environment</option>
+        <option {{ industry == "Research" ? "selected" : "" }} value="Research">Research</option>
+        <option {{ industry == "Restaurants" ? "selected" : "" }} value="Restaurants">Restaurants</option>
+        <option {{ industry == "Retail" ? "selected" : "" }} value="Retail">Retail</option>
+        <option {{ industry == "Security & Investigations" ? "selected" : "" }} value="Security &amp; Investigations">Security &amp; Investigations</option>
+        <option {{ industry == "Semiconductors" ? "selected" : "" }} value="Semiconductors">Semiconductors</option>
+        <option {{ industry == "Shipbuilding" ? "selected" : "" }} value="Shipbuilding">Shipbuilding</option>
+        <option {{ industry == "Sporting Goods" ? "selected" : "" }} value="Sporting Goods">Sporting Goods</option>
+        <option {{ industry == "Sports" ? "selected" : "" }} value="Sports">Sports</option>
+        <option {{ industry == "Staffing & Recruiting" ? "selected" : "" }} value="Staffing &amp; Recruiting">Staffing &amp; Recruiting</option>
+        <option {{ industry == "Supermarkets" ? "selected" : "" }} value="Supermarkets">Supermarkets</option>
+        <option {{ industry == "Telecommunications" ? "selected" : "" }} value="Telecommunications">Telecommunications</option>
+        <option {{ industry == "Textiles" ? "selected" : "" }} value="Textiles">Textiles</option>
+        <option {{ industry == "Think Tanks" ? "selected" : "" }} value="Think Tanks">Think Tanks</option>
+        <option {{ industry == "Tobacco" ? "selected" : "" }} value="Tobacco">Tobacco</option>
+        <option {{ industry == "Translation" ? "selected" : "" }} value="Translation &amp; Localization">Translation &amp; Localization</option>
+        <option {{ industry == "Transportation/Trucking/Railroad" ? "selected" : "" }} value="Transportation/Trucking/Railroad">Transportation/Trucking/Railroad</option>
+        <option {{ industry == "Utilities" ? "selected" : "" }} value="Utilities">Utilities</option>
+        <option {{ industry == "Venture Capital &amp; Private Equity" ? "selected" : "" }} value="Venture Capital &amp; Private Equity">Venture Capital &amp; Private Equity</option>
+        <option {{ industry == "Veterinary" ? "selected" : "" }} value="Veterinary">Veterinary</option>
+        <option {{ industry == "Warehousing" ? "selected" : "" }} value="Warehousing">Warehousing</option>
+        <option {{ industry == "Wholesale" ? "selected" : "" }} value="Wholesale">Wholesale</option>
+        <option {{ industry == "Wine & Spirits" ? "selected" : "" }} value="Wine &amp; Spirits">Wine &amp; Spirits</option>
+        <option {{ industry == "Wireless" ? "selected" : "" }} value="Wireless">Wireless</option>
+        <option {{ industry == "Writing & Editing" ? "selected" : "" }} value="Writing &amp; Editing">Writing &amp; Editing</option>
+      </select>
+      <div>
+        <input id="industry_value" type="text" value="{{ industry }}" hidden>
+      </div>
+      <div id="validation_industry_feedback" class="invalid-feedback">
+        This field is required.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="inputCompanySize">Company size*</label>
+      <select name="inputCompanySize" id="inputCompanySize" class="form-control" required>
+        <option value="">Select company size</option>
+        <option {{ company_size == "Self-employed" ? "selected value='Self-employed'" : "" }} {#value="Self-employed"#}>Self-employed</option>
+        <option {{ company_size == "0-1 employees" ? "selected" : "" }} value="0-1 employees">0-1 employees</option>
+        <option {{ company_size == "2-10 employees" ? "selected" : "" }} value="2-10 employees">2-10 employees</option>
+        <option {{ company_size == "11-50 employees" ? "selected" : "" }} value="11-50 employees">11-50 employees</option>
+        <option {{ company_size == "51-200 employees" ? "selected" : "" }} value="51-200 employees">51-200 employees</option>
+
+        <option {{ company_size == "201-500 employees" ? "selected" : "" }} value="201-500 employees">201-500 employees</option>
+        <option {{ company_size == "501-1000 employees" ? "selected" : "" }} value="501-1000 employees">501-1000 employees</option>
+        <option {{ company_size == "1001-5000 employees" ? "selected" : "" }} value="1001-5000 employees">1001-5000 employees</option>
+        <option {{ company_size == "5001-10,000 employees" ? "selected" : "" }} value="5001-10,000 employees">5001-10,000 employees</option>
+        <option {{ company_size == "10,001+ employees" ? "selected" : "" }} value="10,001+ employees">10,001+ employees</option>
+      </select>
+      <div>
+        <input id="company_size_value" type="text" value="{{ company_size }}" hidden>
+      </div>
+      <div id="validation_companySize_feedback" class="invalid-feedback">
+        This field is required.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="inputCompanyType">Select company type*</label>
+      <select name="inputCompanyType" id="inputCompanyType" class="form-control" required>
+        <option selected value="">Select company type</option>
+
+        <option {{ company_type == "Public company" ? "selected" : ""}} value="Public company">Public company</option>
+        <option {{ company_type == "Self-employed" ? "selected" : ""}} value="Self-employed">Self-employed</option>
+        <option {{ company_type == "Government agency" ? "selected" : ""}} value="Government agency">Government agency</option>
+        <option {{ company_type == "Nonprofit" ? "selected" : ""}} value="Nonprofit">Nonprofit</option>
+        <option {{ company_type == "Sole proprietorship" ? "selected" : ""}} value="Sole proprietorship">Sole proprietorship</option>
+        <option {{ company_type == "Privately held" ? "selected" : ""}} value="Privately held">Privately held</option>
+        <option {{ company_type == "Partnership" ? "selected" : ""}} value="Partnership">Partnership</option>
+
+      </select>
+      <div>
+        <input id="company_type_value" type="text" value="{{ company_type }}" hidden>
+      </div>
+      <div id="validation_location_feedback" class="invalid-feedback">
+        This field is required.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="txt_Headquarters">Headquarters location</label>
+      <input type="text" class="form-control" id="txt_Headquarters" value="{{ headquarters }}">
+
+    </div>
+
+    <div class="form-group">
+      {#<label for="txt_Founded">Founded</label>
+      <input type="text" class="form-control" id="txt_Founded" value="{{ founded }}">#}
+      <label for="datepicker">Founded</label>
+      <input type="text" class="form-control" id="datepicker">
+    <br />
+
+    <!--Profile Details-->
+    <div class="" style="">
+      <div style="color: cornflowerblue">Profile Details</div>
+
+    </div>
+
+    <div class="" style="">
+      <hr style="border: 2px solid cornflowerblue;" />
+    </div>
+    <br />
+
+    <div class="">
+      <label for="upload_picture">Upload logo image</label>
+      <input name="upload_picture" id="upload_picture" style="border: 1px solid darkgray; width: 100%; border-radius: 8px;" type="file" /><br />
+      <label id="popover" role="button" tabindex="0" class="" data-toggle="popover" title="Upload requirements"
+         data-content="File types allowed: .png .jpg .jpeg">? Upload requirements</label>
+    </div>
+
+    <br />
+
+    <div class="form-group">
+      <label for="txt_Tagline">Tagline</label>
+      <textarea type="text" class="form-control" id="txt_Tagline">{{ tagline }}</textarea>
+
+    </div>
+
+    <br />
+
+    <div class="form-group" style="margin-left: 17px;">
+      <div class="checkbox">
+        <label class="control-label"><input id="chk_box" type="checkbox" />
+          I verify that I am an authorized representative of this organization and have the
+          <br />right to act on its behalf in the creation and management of this page.
+        </label>
+      </div>
+    </div>
+
+    <br />
+
+    <div class="" style="display: flex;margin-left: 15px">
+
+      <div class="">
+        <button id="btn_save_draft" class="btn btn-success">Save Draft</button>
+      </div>
+
+      <div class="" style="margin-left: 25px">
+        <button id="btn_create_page" class="btn btn-primary">Create Page</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  </div>
+
+  <script>
+
+    const $result = document.getElementById("txt_grmds_public_url");
+    const $result2 = document.getElementById("span_grmds_url");
+
+    //const $nameString = document.getElementById('txt_name');
+
+    /*let $nameString = document.getElementById('txt_name').value;
+    let $searchString = $nameString.search("-");
+
+    let $replaceString = $nameString.replace(/-/g, ' ');
+
+    document.getElementById('txt_name').value = $replaceString;*/
+
+    function addHyphen($el) {
+      $el.value = hyphenize($el.value);
+      $result.value = $el.value.toLowerCase();
+      $result2.innerHTML = $el.value.toLowerCase();
+
+      let $nameString = document.getElementById('txt_name').value;
+      let $searchString = $nameString.search("-");
+
+      let $replaceString = $nameString.replace(/-/g, ' ');
+
+      document.getElementById('txt_name').value = $replaceString;
+
+
+    }
+
+    function hyphenize(str) {
+      return str
+        .replace(/[^a-z0-9]/gi, '-') // Replace non-alphanumerical chars with '-'
+        .replace(/-+/g, '-'); // Deduplicate them
+    }
+
+    (function ($, Drupal){
+
+      $( "#datepicker" ).datepicker();
+
+    })(jQuery, Drupal);
+
+
+  </script>
+
+{% else %}
+    <div class="container">
+
+      <div class="jumbotron text-center">
+        <h1 class="display-4">Oops! You must be logged in to view this page!</h1>
+        <hr class="my-4">
+        <p>You can create a page by clicking the link below.</p>
+        <a class="" href="/user/login" role="link">Login</a>
+        <hr class="my-4">
+        <p>You don't have an account? Create one <a href="/user/register">here</a></p>
+      </div>
+
+    </div>
+{% endif %}
+</div>

@@ -1,0 +1,8 @@
+company_page:
+  header: true
+  js:
+    js/company_page.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings

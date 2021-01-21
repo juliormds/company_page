@@ -1,0 +1,5 @@
+name: Company Page
+description: This module will display company page
+type: module
+core_version_requirement: ^8 || ^9
+package: Other

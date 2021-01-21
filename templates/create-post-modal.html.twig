@@ -1,0 +1,47 @@
+<div class="modal fade" id="create_post_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Create a post</h4>
+      </div>
+      <div class="modal-body">
+
+          <!-- CREATE A POST FORM -->
+
+          <form method="post" id="post_form" enctype="multipart/form-data">
+
+            {#<div class="form-group">
+              <label for="txt_name">Company Name*</label>
+              <input placeholder="Put your company name" type="text" class="form-control" name="post_company_name" id="txt_name" value="" required>
+              <div id="validation_overview_feedback" class="invalid-feedback">
+                This field is required.
+              </div>
+            </div>#}
+
+            <div class="">
+              <label for="postImage">Upload logo image</label>
+
+              <input name="postImage" id="postImage" style="border: 1px solid darkgray; width: 100%; border-radius: 8px;" type="file" /><br />
+
+              <label id="popover" role="button" tabindex="0" class="" data-toggle="popover" title="Upload requirements"
+                     data-content="File types allowed: .png .jpg .jpeg">? Upload requirements</label>
+            </div>
+            <br />
+            <div class="form-group">
+              <label for="txt_post_message">Post Message*</label>
+              <textarea id="txt_post_message" cols="30" class="form-control" rows="10" placeholder="Post a message for {{ name_of_user }}"></textarea>
+
+            </div>
+
+          </form>
+          <!-- END CREATE A POST FORM -->
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" id="btn_submit_post" class="btn btn-success">Submit Post</button>
+      </div>
+    </div>
+  </div>
+</div>
