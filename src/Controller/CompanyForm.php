@@ -499,7 +499,7 @@ ON dr_user_posts.poster_id = dr_user_company_page.uid WHERE dr_user_posts.postin
 
       // can upload same image using rand function
       $final_image = rand(1000, 1000000) . $poster_image;
-      $upload_destination = $upload_destination . strtolower($final_image);
+      $upload_destination = $upload_destination. strtolower($final_image);
 
       if (in_array($ext, $valid_extensions)) {
 

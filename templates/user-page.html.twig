@@ -147,6 +147,8 @@
 <br />
 <br />
 
+{% if logged_in_user_id != 0 %}
+
 <div style="display: flex; justify-content: space-between">
   <div style="font-size: 20px; margin-top: 5px;">Sort by</div>
   {% if logged_in_user_id != uid %}
@@ -206,7 +208,7 @@
 
         {% if value.post_image != "" %}
         <div>
-          <img style="margin: 0 auto;" class="img-responsive" src="/sites/default/files/inline-images/posts/{{ value.post_image }}" alt="Picture">
+          <img style="margin: 0 auto;" class="img-responsive" src="/sites/default/files/inline-images/posts/{{ value.post_image|lower }}" alt="Picture">
         </div>
         {% endif %}
 
@@ -234,6 +236,8 @@
   </div>
 </div>
   {% endfor %}
+
+{% endif %}
 
 {% endif %}
 <script>
