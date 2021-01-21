@@ -173,9 +173,9 @@
 
     <div class="col-sm-3" style="width: 13%; margin-left: 2%">
       {% if value.page_picture == "" %}
-      <div style="height: 100px; width: 100px; background-color: lightgray; padding-top: 34px; padding-left: 13px">Logo Image</div>
+      <div style="height: 100px; width: 100px; background-color: lightgray; padding-top: 34px; padding-left: 13px"><a href="/company/{{ value.grmds_url }}">Logo Image</a></div>
       {% else %}
-        <img height="100" width="100" class="img-responsive" src="/sites/default/files/inline-images/company_images/{{ value.page_picture }}" alt="Picture">
+        <a href="/company/{{ value.grmds_url }}"><img height="100" width="100" class="img-responsive" src="/sites/default/files/inline-images/company_images/{{ value.page_picture }}" alt="Picture"></a>
         {% endif %}
     </div>
 
