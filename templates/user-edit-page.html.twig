@@ -245,7 +245,7 @@
 
       <div class="form-group">
         <label for="inputCompanySize">Company size*</label>
-        <select name="inputCompanySize" id="inputCompanySize" class="form-control" required>
+        <select onchange="myChangeFunction()" name="inputCompanySize" id="inputCompanySize" class="form-control" required>
           <option value="">Select company size</option>
           <option {{ company_size == "Self-employed" ? "selected value='Self-employed'" : "" }} {#value="Self-employed"#}>Self-employed</option>
           <option {{ company_size == "0-1 employees" ? "selected" : "" }} value="0-1 employees">0-1 employees</option>
@@ -269,7 +269,7 @@
 
       <div class="form-group">
         <label for="inputCompanyType">Select company type*</label>
-        <select name="inputCompanyType" id="inputCompanyType" class="form-control" required>
+        <select onchange="myChangeFunction()" name="inputCompanyType" id="inputCompanyType" class="form-control" required>
           <option selected value="">Select company type</option>
 
           <option {{ company_type == "Public company" ? "selected" : ""}} value="Public company">Public company</option>
@@ -330,10 +330,14 @@
 
         <br />
 
-        <div class="" style="/*display: flex;margin-left: 15px*/">
+        <div class="" style="display: flex; justify-content: space-between;">
 
           <div class="" style="/*margin-left: 25px*/">
             <button id="btn_update_page" class="btn btn-primary">Update</button>
+          </div>
+
+          <div class="" style="/*margin-left: 25px*/">
+            <a href="/company/{{ grmds_url }}" class="btn btn-success">Back</a>
           </div>
 
         </div>
@@ -382,6 +386,8 @@
       function myChangeFunction(){
 
         document.getElementById("industry_value").value = document.getElementById("inputIndustry").value;
+        document.getElementById("company_size_value").value = document.getElementById("inputCompanySize").value;
+        document.getElementById("company_type_value").value = document.getElementById("inputCompanyType").value;
 
       }
 
@@ -441,11 +447,22 @@
         let headquarters = $('#txt_Headquarters').val();
         let founded = $('#datepicker').val();
 
-        let upload_picture = $('#upload_picture').val();
         let tagline = $('#txt_Tagline').val();
 
-        //alert(contactInfo + " " + headquarters + " " + founded);
+        let upload_picture = $('#upload_picture')[0].files[0];
 
+        let myFormData = new FormData();
+
+        myFormData.append('name', name);
+        myFormData.append('user_url_link', user_url_link);
+        myFormData.append('website', website);
+        myFormData.append('industry', textbox_industry_value);
+        myFormData.append('companySize', textbox_companySize_value);
+        myFormData.append('companyType', textbox_companyType_value);
+        myFormData.append('headquarters', headquarters);
+        myFormData.append('founded', founded);
+        myFormData.append('upload_picture', upload_picture);
+        myFormData.append('tagline', tagline);
 
         if(name !== ""){
           if(user_url_link !== ""){
@@ -459,21 +476,12 @@
                     $.ajax({
                       url: "/company/{{ uid }}/update",
                       type: "POST",
-                      data: {
-                        name: name,
-                        user_url_link: user_url_link,
-                        website: website,
-                        industry: textbox_industry_value,
-                        companySize: textbox_companySize_value,
-                        companyType: textbox_companyType_value,
-                        headquarters: headquarters,
-                        founded: founded,
-                        upload_picture: upload_picture,
-                        tagline: tagline
-                      },
+                      processData: false, // important
+                      contentType: false, // important
+                      data: myFormData,
                       dataType: "JSON",
                       success: function (data){
-                        console.log(data.url);
+                        console.log(data);
 
                         if(data.result === "success"){
 

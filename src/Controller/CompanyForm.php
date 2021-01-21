@@ -398,57 +398,110 @@ ON dr_user_posts.poster_id = dr_user_company_page.uid WHERE dr_user_posts.postin
     $companyType = $_POST['companyType'];
     $headquarters = $_POST['headquarters'];
     $founded = $_POST['founded'];
-    $upload_picture = $_POST['upload_picture'];
     $tagline = $_POST['tagline'];
 
+    $valid_extensions = array('jpeg', 'jpg', 'png'); // valid extensions
 
-   $update_query = $db->update('dr_user_company_page')
-     ->fields([
-       'uid' => $uid,
-       'name_of_user' => $name,
-       'grmds_url' => $user_url_link,
-       'website' => $website,
-       'industry' => $industry,
-       'company_size' => $companySize,
-       'company_type' => $companyType,
-       'headquarters' => $headquarters,
-       'founded' => $founded,
-       'page_picture' => $upload_picture,
-       'tagline' => $tagline,
-       'updated_at' => $time,
-     ])
-     ->condition('uid', $uid);
-     $result = $update_query->execute();
+    $upload_picture_name = $_FILES['upload_picture']['name'];
+    $upload_picture_size = $_FILES['upload_picture']['size'];
+    $upload_picture_temp = $_FILES['upload_picture']['tmp_name'];
 
-     /** Grab new values from database **/
-     $new_checkUpdateQuery = $db->query("SELECT * FROM {dr_user_company_page} WHERE uid = :uid", [':uid' => $uid]);
-     $new_check_result = $new_checkUpdateQuery->fetchAll();
+    if(!isset($upload_picture_name)) {
 
-     $db_new_name_of_user = $new_check_result[0]->name_of_user;
-     $db_new_grmds_url = $new_check_result[0]->grmds_url;
-     $db_new_website = $new_check_result[0]->website;
-     $db_new_industry = $new_check_result[0]->industry;
-     $db_new_company_size = $new_check_result[0]->company_size;
-     $db_new_company_type = $new_check_result[0]->company_type;
-     $db_new_headquarters = $new_check_result[0]->headquarters;
-     $db_new_founded = $new_check_result[0]->founded;
-     $db_new_page_picture = $new_check_result[0]->page_picture;
-     $db_new_tagline = $new_check_result[0]->tagline;
-     //$db_new_time = $new_check_result[0]->updated_at;
+      $update_query = $db->update('dr_user_company_page')
+        ->fields([
+          'uid' => $uid,
+          'name_of_user' => $name,
+          'grmds_url' => $user_url_link,
+          'website' => $website,
+          'industry' => $industry,
+          'company_size' => $companySize,
+          'company_type' => $companyType,
+          'headquarters' => $headquarters,
+          'founded' => $founded,
+          'tagline' => $tagline,
+          'updated_at' => $time,
+        ])
+        ->condition('uid', $uid);
+      $result = $update_query->execute();
+
+      /** Grab new values from database **/
+      $new_checkUpdateQuery = $db->query("SELECT * FROM {dr_user_company_page} WHERE uid = :uid", [':uid' => $uid]);
+      $new_check_result = $new_checkUpdateQuery->fetchAll();
+
+      $db_new_name_of_user = $new_check_result[0]->name_of_user;
+      $db_new_grmds_url = $new_check_result[0]->grmds_url;
+      $db_new_website = $new_check_result[0]->website;
+      $db_new_industry = $new_check_result[0]->industry;
+      $db_new_company_size = $new_check_result[0]->company_size;
+      $db_new_company_type = $new_check_result[0]->company_type;
+      $db_new_headquarters = $new_check_result[0]->headquarters;
+      $db_new_founded = $new_check_result[0]->founded;
+      $db_new_page_picture = $new_check_result[0]->page_picture;
+      $db_new_tagline = $new_check_result[0]->tagline;
+      //$db_new_time = $new_check_result[0]->updated_at;
 
 
-     if($db_old_name_of_user !== $db_new_name_of_user || $db_old_grmds_url !== $db_new_grmds_url ||
+      if ($db_old_name_of_user !== $db_new_name_of_user || $db_old_grmds_url !== $db_new_grmds_url ||
         $db_old_website !== $db_new_website || $db_old_industry !== $db_new_industry || $db_old_company_size !== $db_new_company_size ||
         $db_old_company_type !== $db_new_company_type || $db_old_headquarters !== $db_new_headquarters || $db_old_founded !== $db_new_founded ||
-        $db_old_page_picture !== $db_new_page_picture || $db_old_tagline !== $db_new_tagline){
+        $db_old_page_picture !== $db_new_page_picture || $db_old_tagline !== $db_new_tagline) {
 
-       return new AjaxResponse(['result' => 'success', 'url' => $db_new_grmds_url]);
+        return new AjaxResponse(['result' => 'success', 'url' => $db_new_grmds_url]);
 
-     } else {
-       return new AjaxResponse(['result' => 'error', 'msg' => 'No changes made.']);
-     }
+      } else {
+        return new AjaxResponse(['result' => 'error', 'msg' => 'No changes made.']);
+      }
+
+    } else {
+
+      $upload_destination = 'public://inline-images/company_images/';
+
+      $ext = strtolower(pathinfo($upload_picture_name, PATHINFO_EXTENSION));
+
+      // can upload same image using rand function
+      $final_image = rand(1000, 1000000) . $upload_picture_name;
+      $upload_destination = $upload_destination . strtolower($final_image);
+
+      if(in_array($ext,$valid_extensions)){
+
+        if($upload_picture_size > 0 && $upload_picture_size <= 3000000){
+
+          if(move_uploaded_file($upload_picture_temp, $upload_destination)){
+
+            /** Pull the old image from the database to delete it **/
+            $edit_query = $db->query("SELECT * FROM {dr_user_company_page} WHERE uid = :uid", [':uid' => $uid]);
+            $edit_results = $edit_query->fetchAll();
+
+            $db_post_image = $edit_results[0]->page_picture;
+
+            /** Delete the old image to upload the new image. **/
+            unlink('public://inline-images/company_images/'. $db_post_image);
+
+            $update_query = $db->update('dr_user_company_page')
+              ->fields([
+                'page_picture' => $final_image,
+              ])
+              ->condition('uid', $uid);
+            $result = $update_query->execute();
+
+            return new AjaxResponse(['result' => 'success', 'url' => $edit_results[0]->grmds_url]);
+
+          }else {
+            return new AjaxResponse(['result' => 'error', 'msg' => 'Something went wrong with the file upload.']);
+          }
 
 
+        } else {
+          return new AjaxResponse(['result' => 'error', 'msg' => 'The file is too big only up to 3MB allowed.']);
+        }
+
+
+      } else {
+        return new AjaxResponse(['result' => 'error', 'msg' => 'Not a valid file type.']);
+      }
+
+    }
 
   }
 
