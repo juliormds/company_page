@@ -248,8 +248,7 @@
       <select name="inputCompanySize" id="inputCompanySize" class="form-control" required>
         <option value="">Select company size</option>
         <option {{ company_size == "Self-employed" ? "selected value='Self-employed'" : "" }} {#value="Self-employed"#}>Self-employed</option>
-        <option {{ company_size == "0-1 employees" ? "selected" : "" }} value="0-1 employees">0-1 employees</option>
-        <option {{ company_size == "2-10 employees" ? "selected" : "" }} value="2-10 employees">2-10 employees</option>
+        <option {{ company_size == "1-10 employees" ? "selected" : "" }} value="1-10 employees">1-10 employees</option>
         <option {{ company_size == "11-50 employees" ? "selected" : "" }} value="11-50 employees">11-50 employees</option>
         <option {{ company_size == "51-200 employees" ? "selected" : "" }} value="51-200 employees">51-200 employees</option>
 
