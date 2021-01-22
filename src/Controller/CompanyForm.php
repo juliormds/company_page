@@ -209,12 +209,14 @@ class CompanyForm extends ControllerBase{
 
       /** Check if there are any posts for the user **/
 
-      //$posts_query = $db->query("SELECT * FROM {dr_user_posts} WHERE posting_to_id = :uid", [':uid' => $followee_id]);
-
-      $posts_query = $db->query("SELECT dr_user_posts.id, dr_user_posts.poster_id, dr_user_posts.post_message, dr_user_posts.post_image,
-dr_user_posts.created_at, dr_user_company_page.name_of_user,
-dr_user_company_page.page_picture, dr_user_company_page.grmds_url FROM {dr_user_posts} INNER JOIN {dr_user_company_page}
-ON dr_user_posts.poster_id = dr_user_company_page.uid WHERE dr_user_posts.posting_to_id = :uid ORDER BY created_at ASC", [':uid' => $followee_id]);
+      $posts_query = $db->query("SELECT n.id, n.poster_id, n.post_message, n.post_image,
+                                              n.created_at, o.name_of_user,
+                                              o.page_picture, o.grmds_url
+                                       FROM {dr_user_posts} n
+                                       INNER JOIN {dr_user_company_page} o
+                                       ON o.uid = n.poster_id
+                                       WHERE n.poster_id = :uid",
+                                       [':uid' => $followee_id]);
       $posts_result = $posts_query->fetchAll();
 
       return [

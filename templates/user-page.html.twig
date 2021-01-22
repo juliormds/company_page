@@ -63,7 +63,7 @@
         {% if page_picture == "" %}
         <div style="height: 100px; width: 100px; background-color: lightgray; padding-top: 34px; padding-left: 13px">Logo Image</div>
         {% else %}
-        <div><img style="height: 100px; width: 100px;" src="/sites/default/files/inline-images/company_images/{{ page_picture }}" alt="Company Image"></div>
+        <div><img style="height: 100px; width: 100px;" src="/sites/default/files/inline-images/company_images/{{ page_picture|lower }}" alt="Company Image"></div>
         {% endif %}
         <br />
 
@@ -125,7 +125,7 @@
   <hr style="border-top: 5px solid #cce5f1; width: 91%;" />
   <div class="container">
     {% if about != "" %}
-    <p style="width: 59%; margin-left: 2%;">{{ about }}</p>
+    <p id="about_value" style="width: 59%; margin-left: 2%;">{{ about }}</p>
     {% else %}
     <p style="width: 59%; margin-left: 2%;">Write something about your company page</p>
     {% endif %}
@@ -139,7 +139,7 @@
 <br />
 <br />
 <!-- View Posts section here -->
-
+{% if 'administrator' in user.getroles() %} <!-- Only display the create a post button for Administrator roles -->
 <div>
   <p style="font-size: 20px;"><strong>View Posts</strong></p>
 </div>
@@ -147,11 +147,11 @@
 <br />
 <br />
 
-{% if logged_in_user_id != 0 %}
+
 
 <div style="display: flex; justify-content: space-between">
   <div style="font-size: 20px; margin-top: 5px;">Sort by</div>
-  {% if logged_in_user_id != uid %}
+  {% if logged_in_user_id == uid %}
     <div><button data-toggle="modal" data-target="#create_post_modal" class="btn btn-primary">Create a post</button></div>
   {% endif %}
 </div>
@@ -175,9 +175,9 @@
 
     <div class="col-sm-3" style="width: 13%; margin-left: 2%">
       {% if value.page_picture == "" %}
-      <div style="height: 100px; width: 100px; background-color: lightgray; padding-top: 34px; padding-left: 13px"><a href="/company/{{ value.grmds_url }}">Logo Image</a></div>
+      <div style="height: 100px; width: 100px; background-color: lightgray; padding-top: 34px; padding-left: 13px">Logo Image</div>
       {% else %}
-        <a href="/company/{{ value.grmds_url }}"><img height="100" width="100" class="img-responsive" src="/sites/default/files/inline-images/company_images/{{ value.page_picture }}" alt="Picture"></a>
+        <img height="100" width="100" class="img-responsive" src="/sites/default/files/inline-images/company_images/{{ value.page_picture|lower }}" alt="Picture">
         {% endif %}
     </div>
 
@@ -337,13 +337,16 @@
       $.ajax({
         url: "/company/" + currentUserID + "/edit/about",
         type: "POST",
-        body: {edit_txt_about: edit_txt_about},
+        data: {edit_txt_about: edit_txt_about},
         dataType: "JSON",
         success: function (data){
-          console.log(data);
 
           if(data.result === "success"){
-            alert(data.msg);
+
+            $('#myModal').modal('hide');
+
+            $('#about_value').text(edit_txt_about);
+
             //window.location.href = "/company/" + ownerPage;
 
           }
