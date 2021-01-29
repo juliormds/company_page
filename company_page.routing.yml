@@ -1,5 +1,5 @@
 # Create a route with controller function to be called
-basic_form:
+company_page:
   path: '/company'
   defaults:
     _controller: 'Drupal\company_page\Controller\CompanyForm::displayForm'
@@ -7,7 +7,7 @@ basic_form:
   requirements:
     _permission: 'access content'
 
-basic_form.insertData:
+company_page.insertData:
   path: '/insert/company_page'
   defaults:
     _controller: 'Drupal\company_page\Controller\CompanyForm::insertData'
@@ -15,7 +15,7 @@ basic_form.insertData:
   requirements:
     _permission: 'access content'
 
-basic_form.displayUserPage:
+company_page.displayUserPage:
   path: '/company/{url}'
   defaults:
     _controller: 'Drupal\company_page\Controller\CompanyForm::displayUserPage'
@@ -23,7 +23,7 @@ basic_form.displayUserPage:
   requirements:
     _permission: 'access content'
 
-basic_form.saveDraft:
+company_page.saveDraft:
   path: '/save_draft/company_page'
   defaults:
     _controller: 'Drupal\company_page\Controller\CompanyForm::saveDraft'
@@ -31,7 +31,7 @@ basic_form.saveDraft:
   requirements:
     _permission: 'access content'
 
-basic_form.editCompanyPage:
+company_page.editCompanyPage:
   path: '/company/{uid}/edit'
   defaults:
     _controller: 'Drupal\company_page\Controller\CompanyForm::editCompanyPage'
@@ -39,7 +39,7 @@ basic_form.editCompanyPage:
   requirements:
     _permission: 'access content'
 
-basic_form.updateUserPage:
+company_page.updateUserPage:
   path: '/company/{uid}/update'
   defaults:
     _controller: 'Drupal\company_page\Controller\CompanyForm::updateUserPage'
@@ -47,7 +47,7 @@ basic_form.updateUserPage:
   requirements:
     _permission: 'access content'
 
-basic_form.saveFollowingUserPage:
+company_page.saveFollowingUserPage:
   path: '/company/{followingID}/follow_user_page'
   defaults:
     _controller: 'Drupal\company_page\Controller\CompanyForm::saveFollowingUserPage'
@@ -55,15 +55,15 @@ basic_form.saveFollowingUserPage:
   requirements:
     _permission: 'access content'
 
-basic_form.createPosts:
-  path: '/company/{postingToId}/create_post'
+company_page.createPosts:
+  path: '/company/create_post'
   defaults:
     _controller: 'Drupal\company_page\Controller\CompanyForm::createPosts'
     _title: 'User Page'
   requirements:
     _permission: 'access content'
 
-basic_form.deletePosts:
+company_page.deletePosts:
   path: '/company/{id}/delete/post'
   defaults:
     _controller: 'Drupal\company_page\Controller\CompanyForm::deletePosts'
@@ -71,7 +71,7 @@ basic_form.deletePosts:
   requirements:
     _permission: 'access content'
 
-basic_form.saveAbout:
+company_page.saveAbout:
   path: '/company/{uid}/edit/about'
   defaults:
     _controller: 'Drupal\company_page\Controller\CompanyForm::saveAbout'
@@ -79,7 +79,7 @@ basic_form.saveAbout:
   requirements:
     _permission: 'access content'
 
-basic_form.editPost:
+company_page.editPost:
   path: '/company/{id}/edit/post'
   defaults:
     _controller: 'Drupal\company_page\Controller\CompanyForm::edit_post'
@@ -87,7 +87,7 @@ basic_form.editPost:
   requirements:
     _permission: 'access content'
 
-basic_form.savePost:
+company_page.savePost:
   path: '/company/{id}/save/edit/post'
   defaults:
     _controller: 'Drupal\company_page\Controller\CompanyForm::saveEditPost'

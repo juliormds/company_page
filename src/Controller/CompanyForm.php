@@ -48,8 +48,7 @@ class CompanyForm extends ControllerBase{
         '#theme' => 'company_form',
       ];
     }
-    //return new AjaxResponse($data);
-    //return new AjaxResponse();
+
   }
 
   public function insertData(){
@@ -184,7 +183,8 @@ class CompanyForm extends ControllerBase{
     //return new AjaxResponse("This is coming from the php controller". " industry: ". $industry. " - ". " companySize: ". $companySize. " - ". " location: ". $location. " - ");
   }
 
-  /** Display user's page **/
+  /** Display user's page based on GRMDS URL **/
+
   public function displayUserPage($url){
 
     $db = Database::getConnection();
@@ -215,7 +215,8 @@ class CompanyForm extends ControllerBase{
                                        FROM {dr_user_posts} n
                                        INNER JOIN {dr_user_company_page} o
                                        ON o.uid = n.poster_id
-                                       WHERE n.poster_id = :uid",
+                                       WHERE n.poster_id = :uid
+                                       ORDER BY created_at DESC",
                                        [':uid' => $followee_id]);
       $posts_result = $posts_query->fetchAll();
 
@@ -374,22 +375,6 @@ class CompanyForm extends ControllerBase{
 
     $db = Database::getConnection();
 
-    /** Grab old values from database **/
-    $old_checkUpdateQuery = $db->query("SELECT * FROM {dr_user_company_page} WHERE uid = :uid", [':uid' => $uid]);
-    $old_check_result = $old_checkUpdateQuery->fetchAll();
-
-    $db_old_name_of_user = $old_check_result[0]->name_of_user;
-    $db_old_grmds_url = $old_check_result[0]->grmds_url;
-    $db_old_website = $old_check_result[0]->website;
-    $db_old_industry = $old_check_result[0]->industry;
-    $db_old_company_size = $old_check_result[0]->company_size;
-    $db_old_company_type = $old_check_result[0]->company_type;
-    $db_old_headquarters = $old_check_result[0]->headquarters;
-    $db_old_founded = $old_check_result[0]->founded;
-    $db_old_page_picture = $old_check_result[0]->page_picture;
-    $db_old_tagline = $old_check_result[0]->tagline;
-    //$db_old_time = $old_check_result[0]->updated_at;
-
     /** Get variables from ajax call **/
 
     $name = $_POST['name'];
@@ -427,33 +412,14 @@ class CompanyForm extends ControllerBase{
         ->condition('uid', $uid);
       $result = $update_query->execute();
 
-      /** Grab new values from database **/
+
       $new_checkUpdateQuery = $db->query("SELECT * FROM {dr_user_company_page} WHERE uid = :uid", [':uid' => $uid]);
       $new_check_result = $new_checkUpdateQuery->fetchAll();
 
-      $db_new_name_of_user = $new_check_result[0]->name_of_user;
       $db_new_grmds_url = $new_check_result[0]->grmds_url;
-      $db_new_website = $new_check_result[0]->website;
-      $db_new_industry = $new_check_result[0]->industry;
-      $db_new_company_size = $new_check_result[0]->company_size;
-      $db_new_company_type = $new_check_result[0]->company_type;
-      $db_new_headquarters = $new_check_result[0]->headquarters;
-      $db_new_founded = $new_check_result[0]->founded;
-      $db_new_page_picture = $new_check_result[0]->page_picture;
-      $db_new_tagline = $new_check_result[0]->tagline;
-      //$db_new_time = $new_check_result[0]->updated_at;
 
 
-      if ($db_old_name_of_user !== $db_new_name_of_user || $db_old_grmds_url !== $db_new_grmds_url ||
-        $db_old_website !== $db_new_website || $db_old_industry !== $db_new_industry || $db_old_company_size !== $db_new_company_size ||
-        $db_old_company_type !== $db_new_company_type || $db_old_headquarters !== $db_new_headquarters || $db_old_founded !== $db_new_founded ||
-        $db_old_page_picture !== $db_new_page_picture || $db_old_tagline !== $db_new_tagline) {
-
-        return new AjaxResponse(['result' => 'success', 'url' => $db_new_grmds_url]);
-
-      } else {
-        return new AjaxResponse(['result' => 'error', 'msg' => 'No changes made.']);
-      }
+      return new AjaxResponse(['result' => 'success', 'url' => $db_new_grmds_url]);
 
     } else {
 
@@ -527,7 +493,7 @@ class CompanyForm extends ControllerBase{
    return new AjaxResponse($result);
   }
 
-  public function createPosts($postingToId){
+  public function createPosts(){
 
     /** Create database connection and grab current logged in user ID **/
     $db = Database::getConnection();
@@ -536,7 +502,6 @@ class CompanyForm extends ControllerBase{
     $time = time();
 
     /** Create php variables from ajax request **/
-    //$poster_company_name = $_POST['postCompanyName'];
     $poster_company_message = $_POST['postMessage'];
 
 
@@ -561,19 +526,56 @@ class CompanyForm extends ControllerBase{
         if ($poster_image_size > 0 && $poster_image_size <= 3000000) {
           if (move_uploaded_file($poster_image_temp, $upload_destination)) {
 
-            $insert_update = $db->upsert('dr_user_posts')
+            $insert_update = $db->insert('dr_user_posts')
               ->fields([
                 'poster_id' => $current_loggedin_user_ID,
-                'posting_to_id' => $postingToId,
                 'post_image' => $final_image,
                 'post_message' => $poster_company_message,
                 'created_at' => $time,
               ]);
 
-            $insert_update->key('poster_id');
             $result = $insert_update->execute();
 
-            return new AjaxResponse(["result" => "success", "msg" => "Success!"]);
+            /** Pull newly inserted data back to ajax **/
+
+            $pull_query = $db->query("SELECT n.id, n.poster_id, n.post_message, n.post_image,
+                                              n.created_at, o.name_of_user,
+                                              o.page_picture, o.grmds_url
+                                       FROM {dr_user_posts} n
+                                       INNER JOIN {dr_user_company_page} o
+                                       ON o.uid = n.poster_id
+                                       WHERE n.poster_id = :uid
+                                       ORDER BY created_at DESC",
+              [':uid' => $current_loggedin_user_ID]);
+
+            $pull_result = $pull_query->fetchAll();
+
+            for($i = 0; $i < count($pull_result); $i++){
+
+              $db_pull_id = $pull_result[$i]->id;
+              $db_pull_poster_id = $pull_result[$i]->poster_id;
+              $db_pull_post_image = $pull_result[$i]->post_image;
+              $db_pull_post_message = $pull_result[$i]->post_message;
+              $db_pull_created_at = $pull_result[$i]->created_at;
+
+              $db_pull_name_of_user = $pull_result[$i]->name_of_user;
+              $db_pull_page_picture = $pull_result[$i]->page_picture;
+
+              return new AjaxResponse(
+                [
+                  "result" => "success",
+                  "msg" => "Success!",
+                  "id" => $db_pull_id,
+                  "poster_id" => $db_pull_poster_id,
+                  "post_image" => strtolower($db_pull_post_image),
+                  "post_message" => $db_pull_post_message,
+                  "name_of_user" => $db_pull_name_of_user,
+                  "page_picture" => $db_pull_page_picture,
+                  "created_at" => $db_pull_created_at
+                ]);
+            }
+
+            return new AjaxResponse();
 
           } else {
             return new AjaxResponse(["result" => "error", "msg" => "Error uploading the file."]);
@@ -586,19 +588,53 @@ class CompanyForm extends ControllerBase{
         return new AjaxResponse(["result" => "error", "msg" => "Invalid file type."]);
       }
     } else {
-      $insert_update = $db->upsert('dr_user_posts')
+      $insert_update = $db->insert('dr_user_posts')
         ->fields([
           'poster_id' => $current_loggedin_user_ID,
-          'posting_to_id' => $postingToId,
-          'post_image' => $poster_image,
+          'post_image' => NULL,
           'post_message' => $poster_company_message,
           'created_at' => $time,
         ]);
 
-      $insert_update->key('poster_id');
       $result = $insert_update->execute();
 
-      return new AjaxResponse(["result" => "success", "msg" => "Success!"]);
+      $pull_query = $db->query("SELECT n.id, n.poster_id, n.post_message, n.post_image,
+                                              n.created_at, o.name_of_user,
+                                              o.page_picture, o.grmds_url
+                                       FROM {dr_user_posts} n
+                                       INNER JOIN {dr_user_company_page} o
+                                       ON o.uid = n.poster_id
+                                       WHERE n.poster_id = :uid
+                                       ORDER BY created_at DESC",
+        [':uid' => $current_loggedin_user_ID]);
+      $pull_result = $pull_query->fetchAll();
+
+      for($i = 0; $i < count($pull_result); $i++){
+
+        $db_pull_id = $pull_result[$i]->id;
+        $db_pull_poster_id = $pull_result[$i]->poster_id;
+        $db_pull_post_image = $pull_result[$i]->post_image;
+        $db_pull_post_message = $pull_result[$i]->post_message;
+        $db_pull_created_at = $pull_result[$i]->created_at;
+
+        $db_pull_name_of_user = $pull_result[$i]->name_of_user;
+        $db_pull_page_picture = $pull_result[$i]->page_picture;
+
+        return new AjaxResponse(
+          [
+            "result" => "success",
+            "msg" => "Success!",
+            "id" => $db_pull_id,
+            "poster_id" => $db_pull_poster_id,
+            "post_image" => $db_pull_post_image,
+            "post_message" => $db_pull_post_message,
+            "name_of_user" => $db_pull_name_of_user,
+            "page_picture" => $db_pull_page_picture,
+            "created_at" => $db_pull_created_at
+          ]);
+      }
+    return new AjaxResponse();
+
     }
   }
 
@@ -658,14 +694,20 @@ class CompanyForm extends ControllerBase{
     $edit_query = $db->query("SELECT * FROM {dr_user_posts} WHERE id = :id", [':id' => $id]);
     $edit_results = $edit_query->fetchAll();
 
-    return new AjaxResponse(
-      [
-        'result' => 'success',
-        'id' => $edit_results[0]->id,
-        'edit_post_company_name' => $edit_results[0]->company_name,
-        'edit_post_message' => $edit_results[0]->post_message,
-      ]
-    );
+    /** I'm appending this html content in the post-edit-modal.html.twig **/
+    $modalHTML = ' <div class="form-group">
+            <label for="edit_txt_post_message">Post Message</label>
+            <textarea cols="30" class="form-control edit_txt_post_message" rows="10" placeholder="Post your message">'. $edit_results[0]->post_message .'</textarea>
+
+          </div>';
+
+      return new AjaxResponse(
+        [
+          'result' => 'success',
+          'id' => $edit_results[0]->id,
+          'modalHTML' => $modalHTML
+        ]
+      );
 
   }
 
@@ -708,6 +750,7 @@ class CompanyForm extends ControllerBase{
             $edit_results = $edit_query->fetchAll();
 
             $db_post_image = $edit_results[0]->post_image;
+            $db_post_message = $edit_results[0]->post_message;
 
             /** Delete the old image to upload the new image. **/
             unlink('public://inline-images/posts/'. $db_post_image);
@@ -723,7 +766,22 @@ class CompanyForm extends ControllerBase{
             $update->condition('id', $id);
             $result = $update->execute();
 
-            return new AjaxResponse(["result" => "success", "msg" => "Success!"]);
+            /** Pull the newly updated info from database **/
+            $updated_post_query = $db->query("SELECT * FROM {dr_user_posts} WHERE id = :id", [':id' => $id]);
+            $updated_post_result = $updated_post_query->fetchAll();
+
+            $db_updated_post_message = $updated_post_result[0]->post_message;
+            $db_updated_post_image = $updated_post_result[0]->post_image;
+            $db_updated_created_at = $updated_post_result[0]->created_at;
+
+            return new AjaxResponse(
+              [
+                "result" => "success",
+                "msg" => "Success!",
+                "post_message" => $db_updated_post_message,
+                "post_image" => strtolower($db_updated_post_image),
+                "created_at" => $db_updated_created_at
+              ]);
 
           } else {
             return new AjaxResponse(["result" => "error", "msg" => "Error uploading the file."]);
@@ -746,7 +804,21 @@ class CompanyForm extends ControllerBase{
       $update->condition('id', $id);
       $result = $update->execute();
 
-      return new AjaxResponse(["result" => "success", "msg" => "Success!"]);
+      $updated_post_query = $db->query("SELECT * FROM {dr_user_posts} WHERE id = :id", [':id' => $id]);
+      $updated_post_result = $updated_post_query->fetchAll();
+
+      $db_updated_post_message = $updated_post_result[0]->post_message;
+      $db_updated_created_at = $updated_post_result[0]->created_at;
+      $db_updated_post_image = $updated_post_result[0]->post_image;
+
+      return new AjaxResponse(
+        [
+          "result" => "success",
+          "msg" => "Success!",
+          "post_message" => $db_updated_post_message,
+          "post_image" => strtolower($db_updated_post_image),
+          "created_at" => $db_updated_created_at
+        ]);
     }
 
   }

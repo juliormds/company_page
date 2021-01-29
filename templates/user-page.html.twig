@@ -9,6 +9,7 @@
 <div>
 
   {#{% for key, value in allresults %}
+    <p>id: {{ value.id }}</p>
     <p>Name: {{ value.company_name }}</p>
     <p>Image: {{ value.post_image }}</p>
     <p>Message: {{ value.post_message }}</p>
@@ -52,6 +53,10 @@
     resize: none;
   }
 
+  .btn_lighter{
+    background-color:#4da6ff;
+  }
+
 </style>
 
 <div class="profile_box">
@@ -63,13 +68,13 @@
         {% if page_picture == "" %}
         <div style="height: 100px; width: 100px; background-color: lightgray; padding-top: 34px; padding-left: 13px">Logo Image</div>
         {% else %}
-        <div><img style="height: 100px; width: 100px;" src="/sites/default/files/inline-images/company_images/{{ page_picture|lower }}" alt="Company Image"></div>
+        <div><img src="/sites/default/files/inline-images/company_images/{{ page_picture|lower }}" alt="Company Image"></div>
         {% endif %}
         <br />
 
         {% if logged_in_user_id != 0 %}
           <div>
-            <a href="{{ 'https://' in website ? website : "https://" ~ website }}" style="width: 103px;" class="btn btn-primary" target="_blank">Visit Website</a>
+            <a href="{{ 'https://' in website ? website : "https://" ~ website }}" style="width: 103px;" class="btn btn-primary btn_lighter" target="_blank">Visit Website</a>
           </div>
         {% endif %}
 
@@ -85,7 +90,7 @@
 
       {% if logged_in_user_id != 0 and count_following_each_other == 0 %}
         <div class="col-sm-4">
-          <a id="{{ logged_in_user_id != uid ? "btn_follow" : "btn_edit_page" }}" class="btn btn-primary" href="javascript:void(0)">
+          <a id="{{ logged_in_user_id != uid ? "btn_follow" : "btn_edit_page" }}" class="btn btn-primary btn_lighter" href="javascript:void(0)">
             {{ (logged_in_user_id == uid ? "Edit Page" : "Follow+") }}</a>
         </div>
         {% elseif count_following_each_other == 1 %}
@@ -124,11 +129,7 @@
   </div>
   <hr style="border-top: 5px solid #cce5f1; width: 91%;" />
   <div class="container">
-    {% if about != "" %}
-    <p id="about_value" style="width: 59%; margin-left: 2%;">{{ about }}</p>
-    {% else %}
-    <p style="width: 59%; margin-left: 2%;">Write something about your company page</p>
-    {% endif %}
+    <p id="about_value" style="width: 59%; margin-left: 2%;">{{ about != "" ? about : "Write something about your company page" }}</p>
     <br />
   </div>
 
@@ -150,9 +151,9 @@
 
 
 <div style="display: flex; justify-content: space-between">
-  <div style="font-size: 20px; margin-top: 5px;">Sort by</div>
+  <div style="font-size: 20px; margin-top: 5px;">Sort by &nbsp;<span style="box-shadow: 0px 1px 1px 2px rgba(0,0,0,0.1); padding: 4px;">date</span></div>
   {% if logged_in_user_id == uid %}
-    <div><button data-toggle="modal" data-target="#create_post_modal" class="btn btn-primary">Create a post</button></div>
+    <div><button data-toggle="modal" data-target="#create_post_modal" class="btn btn-primary btn_lighter">Create a post</button></div>
   {% endif %}
 </div>
 
@@ -161,13 +162,13 @@
 <!-- Add create post modal here -->
 {% include '@company_page/create-post-modal.html.twig' %}
 
-<br />
+  <div id="temp_post_results"></div>
 
 {% if poster_count != 0 %}
 
-  {% for value in allresults %}
+  {% for key, value in allresults %}
 
-    <div class="profile_box">
+<div class="profile_box">
 <div style="margin-left: 10px;" class="">
 <div class="row">
 
@@ -204,26 +205,26 @@
 
   <div class="row">
     <div class="container">
-      <div style="width: 64%;" class="col-sm-9">
+      <div style="/*width: 64%;*/" class="col-sm-9">
+
+        <br />
+
+        <p id="temp_message_value_{{ value.id }}" class="message_value" style="/*width: 75%;*/">
+          {{ value.post_message }}
+        </p>
+
+        <br />
 
         {% if value.post_image != "" %}
-        <div>
+        <div class="post_image" id="temp_post_image_{{ value.id }}">
           <img style="margin: 0 auto;" class="img-responsive" src="/sites/default/files/inline-images/posts/{{ value.post_image|lower }}" alt="Picture">
         </div>
         {% endif %}
 
-        <br />
-        {#<div class="hidden_post_message" data-message="{{ value.post_message }}" hidden></div>#}
-        <p class="message_value" style="width: 75%;">
-          {{ value.post_message }}
-        </p>
         <hr />
         <div style="display: flex;">
           <div>Like</div>
           <div style="margin-left: 27px;">Comment</div>
-          {#{% if logged_in_user_id == poster_id %}
-          <div style="margin-left: 78%;"><button id="btn_delete_post" class="btn btn-danger">Delete</button></div>
-          {% endif %}#}
         </div>
       </div>
     </div>
@@ -240,6 +241,7 @@
 {% endif %}
 
 {% endif %}
+
 <script>
 
   (function ($, Drupal){
@@ -301,7 +303,7 @@
             /** Make Ajax request to back-end php controller **/
 
             $.ajax({
-              url: "/company/" + ownerOfPageID + "/create_post",
+              url: "/company/create_post",
               type: "POST",
               processData: false, // important
               contentType: false, // important
@@ -312,7 +314,89 @@
 
                 if(data.result === "success"){
 
-                  window.location.href = "/company/" + ownerPage;
+                  $('#txt_post_message').val('');
+
+                 /** Re-create the post block **/
+
+                  let profileBox1 = '<div class="profile_box">' +
+                                    '<div style="margin-left: 10px;" class=""><div class="row"><br />';
+
+                  let image_content_opening = '<div class="col-sm-3" style="width: 13%; margin-left: 2%">';
+                  let image_content         = data.page_picture === "" ? '<div style="height: 100px; width: 100px; background-color: lightgray; padding-top: 34px; padding-left: 13px">Logo Image</div>' : '<img height="100" width="100" class="img-responsive" src="/sites/default/files/inline-images/company_images/'+ data.page_picture +'" alt="Picture">';
+                  let image_content_closing = '</div>';
+
+                  let delete_edit_opening_div = '<div class="col-sm-9" style="font-size: 16px;"><div style="display: flex;">';
+
+                  let delete_edit_content = '<p><strong>'+ data.name_of_user +'</strong></p>';
+
+                  let edit_post_modal = currentUserID === data.poster_id ? '<div class="edit_post" style="margin-left: 70%;" data-post-id="'+ data.id +'" data-toggle="modal" data-target="#edit_post_modal">Edit Post</div>' : '';
+
+                  let trash_delete_post = '<div class="trash_icon" data-delete-id="'+ data.id +'" data-toggle="modal" data-target="#delete_post_modal"><img style="height: 25px; margin-left: 57%;" src="/sites/default/files/inline-images/posts/delete_icon.png" alt="Delete Icon"></div></div>';
+
+                  let postOn = '<div><span>Posted on '+ timeConverter(data.created_at) +'</span></div>';
+
+                  let delete_edit_closeing_div = '</div></div><br />';
+
+                  let message_row_opening = '<div class="row"><div class="container"><div class="col-sm-9"><br />';
+
+                  let message_row_content = '<p id="temp_message_value_'+ data.id +'" class="message_value">'+ data.post_message +'</p><br />';
+
+                  let message_row_post_image = data.post_image !== null ? '<div class="post_image" id="temp_post_image_'+ data.id +'"><img style="margin: 0 auto;" class="img-responsive" src="/sites/default/files/inline-images/posts/'+ data.post_image +'" alt="Picture"></div>' : '<div class="post_image" id="temp_post_image_'+ data.id +'"></div>';
+
+                  let message_row_hr = '<hr />';
+
+                  let message_row_like_comment = '<div style="display: flex;"><div>Like</div><div style="margin-left: 27px;">Comment</div></div>';
+
+                  let message_row_closing = '</div></div></div>';
+
+
+                  let profileBox2 = '</div>';
+
+                  let comment_on_this = '<div style="background-color: lightgray; height: 65px; margin-top: 15px"><div class="container"><div style="padding-top: 24px; padding-left: 14px;">Be the first to comment on this</div></div></div>';
+
+                  let profileBox3 = '</div>';
+
+                  $('#create_post_modal').modal('hide');
+
+                  $('#temp_post_results').prepend(
+                    profileBox1
+                    +
+                    image_content_opening
+                    +
+                    image_content
+                    +
+                    image_content_closing
+                    +
+                    delete_edit_opening_div
+                    +
+                    delete_edit_content
+                    +
+                    edit_post_modal
+                    +
+                    trash_delete_post
+                    +
+                    postOn
+                    +
+                    delete_edit_closeing_div
+                    +
+                    message_row_opening
+                    +
+                    message_row_content
+                    +
+                    message_row_post_image
+                    +
+                    message_row_hr
+                    +
+                    message_row_like_comment
+                    +
+                    message_row_closing
+                    +
+                    profileBox2
+                    +
+                    comment_on_this
+                    +
+                    profileBox3
+                  );
 
                 } else if(data.result === "error"){
                   alert(data.msg);
@@ -358,7 +442,7 @@
 
     });
 
-    $('.edit_post').on('click', function (){
+    $(document).on('click', '.edit_post', function (){
 
       //let edit_post_item = $(this);
 
@@ -370,23 +454,16 @@
       /** Connect to back-end database to delete selected post **/
         $.ajax({
           url: "/company/"+ edit_post_id +"/edit/post",
-          type: "POST",
+          type: "GET",
           dataType: "JSON",
           success: function (data){
             console.log(data);
 
             $('.test_post_edit_id').html(data.id);
+            $('#modal_post_message').html(data.modalHTML);
+            //$('.edit_txt_post_message').html(data.post_message);
 
-            $('.edit_txt_name').val(data.edit_post_company_name);
-
-            $('.edit_txt_post_message').html(data.edit_post_message);
-
-            /*if(data.result === "success"){
-              $('#delete_post_modal').modal('hide');
-              item.parent().parent().parent().parent().parent().remove();
-              //window.location.href = "/company/" + ownerPage;
-
-            }*/
+            //alert(data.post_message);
 
           }
 
@@ -395,7 +472,7 @@
 
     /** Update button click event **/
 
-    $('.btn_submit_edit_post').on('click', function (){
+    $(document).on('click', '.btn_submit_edit_post', function (){
 
       let id = $('.test_post_edit_id').html(); /** This element will be hidden **/
 
@@ -422,7 +499,18 @@
 
           if(data.result === "success"){
 
-            window.location.href = "/company/" + ownerPage;
+            $('.editImage').val(null);
+
+            //$('#edit_post_modal').modal('hide');
+            $('#edit_post_modal').modal('hide');
+
+            $('#temp_message_value_'+id).html(data.post_message);
+
+            if(data.post_image !== "" && data.post_image !== null){
+
+              $('#temp_post_image_'+id).html("<img style='margin: 0 auto' class='img-responsive' src='/sites/default/files/inline-images/posts/"+ data.post_image +"' alt='Picture' />");
+
+            }
 
           } else if(data.result === "error"){
             alert(data.msg);
@@ -434,7 +522,7 @@
 
     });
 
-    $('.trash_icon').on('click', function (){
+    $(document).on('click', '.trash_icon', function (){
       let item = $(this);
       let id = $(this).attr('data-delete-id');
       //alert("Delete Post id is: " + id);
@@ -451,8 +539,7 @@
             if(data.result === "success"){
 
               $('#delete_post_modal').modal('hide');
-
-              item.parents('.profile_box').remove();
+              item.parent().parent().parent().parent().parent().remove();
 
             }
 
@@ -485,6 +572,15 @@
 
     function addClassToElements(addClassElement){
       $(addClassElement).addClass('invalid');
+    }
+
+    function timeConverter(UNIX_timestamp) {
+      let a = new Date(UNIX_timestamp * 1000);
+      let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      let year = a.getFullYear();
+      let month = months[a.getMonth()];
+      let date = a.getDate();
+      return month + ' ' + date + ', ' + year + ' ';
     }
 
   })(jQuery, Drupal);

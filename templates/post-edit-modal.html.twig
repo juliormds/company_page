@@ -1,3 +1,6 @@
+
+{#<div class="modal fade" id="edit_post_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+</div>#}
 <div data-edit-id-post="{{ value.id }}" class="modal fade" id="edit_post_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -11,11 +14,6 @@
 
         <form method="post" class="post_form" enctype="multipart/form-data">
 
-          {#<div class="form-group">
-            <label for="edit_txt_name">Company Name</label>
-            <input placeholder="Put your company name" type="text" class="form-control edit_txt_name" name="post_company_name" value="">
-          </div>#}
-
           <div class="">
             <label for="editImage">Upload logo image</label>
 
@@ -25,11 +23,8 @@
                    data-content="File types allowed: .png .jpg .jpeg">? Upload requirements</label>
           </div>
           <br />
-          <div class="form-group">
-            <label for="edit_txt_post_message">Post Message</label>
-            <textarea cols="30" class="form-control edit_txt_post_message" rows="10" placeholder="Post a message for {{ name_of_user }}"></textarea>
 
-          </div>
+          <div id="modal_post_message"></div>
 
         </form>
         <!-- Edit POST FORM -->
